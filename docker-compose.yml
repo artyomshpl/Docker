@@ -13,10 +13,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - library-network
 
   auth-service:
     build:
-      context: ./auth-service
+      context: ./AuthService
     container_name: auth-service
     ports:
       - "8081:8081"
@@ -26,10 +28,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       - postgres
+    networks:
+      - library-network
 
   book-service:
     build:
-      context: ./book-service
+      context: ./BookService
     container_name: book-service
     ports:
       - "8082:8082"
@@ -39,10 +43,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       - postgres
+    networks:
+      - library-network
 
   library-service:
     build:
-      context: ./library-service
+      context: ./LibraryService
     container_name: library-service
     ports:
       - "8083:8083"
@@ -52,6 +58,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       - postgres
+    networks:
+      - library-network
+
+networks:
+  library-network:
+    driver: bridge
 
 volumes:
   postgres_data:
